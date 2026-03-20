@@ -1,0 +1,62 @@
+services:
+  db:
+    container_name: strapi-test-09_postgres
+    image: postgres:17.0-bookworm
+    restart: always
+    environment:
+      # the same as DATABASE_PASSWORD in .env
+      POSTGRES_PASSWORD: aopdij32k4ljr34n
+      # same as DATABASE_NAME in .env
+      POSTGRES_DB: app
+    volumes:
+      - strapi-test-09_postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+
+  pgadmin:
+    container_name: strapi-test-09_pgadmin
+    image: dpage/pgadmin4:9.10
+    environment:
+      PGADMIN_DEFAULT_EMAIL: gottfried.dev@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: asd098234piu34h
+    ports:
+      - 5050:80
+
+  strapi:
+    container_name: strapi-test-09_strapi
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    environment:
+      NODE_ENV: development
+    ports:
+      - 1337:1337
+    # I use long format for volumes because short format automatically creates locations if they don't exist
+    # while long format produces an error in that case
+    volumes:
+      - type: bind
+        source: ./.env
+        target: /usr/src/app/.env
+      - type: bind
+        source: ./config
+        target: /usr/src/app/config
+      - type: bind
+        source: ./src
+        target: /usr/src/app/src
+      - type: bind
+        source: ./database
+        target: /usr/src/app/database
+      - type: bind
+        source: ./public
+        target: /usr/src/app/public
+      - type: bind
+        source: ./backups
+        target: /usr/src/app/backups
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  strapi-test-09_postgres:

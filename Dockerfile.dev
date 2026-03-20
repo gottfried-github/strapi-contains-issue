@@ -1,0 +1,18 @@
+FROM node:24.12.0-alpine
+# Installing libvips-dev for sharp Compatibility
+RUN apk update && apk add --no-cache build-base gcc autoconf automake zlib-dev libpng-dev nasm bash vips-dev git
+
+ENV NODE_ENV=development
+
+# needed for WORKDIR to create the dir correctly: Strapi wants to create files inside it
+USER node:node
+
+WORKDIR /usr/src/app
+
+COPY --chown=node:node . /usr/src/app
+
+RUN npm ci
+
+EXPOSE 1337
+
+CMD ["npm", "run", "dev"]
