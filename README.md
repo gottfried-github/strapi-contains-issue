@@ -20,7 +20,7 @@ I also tried this with an SQLite database, and the behavior is the same.
 
 # `$contains` works in Document Service API
 
-In [link](#link) I perform the same query as above with the `$contains` operator via Document Service API.
+[Here](https://github.com/gottfried-github/strapi-contains-issue/blob/8fb0b0cd21a30b5b751d3c4f60cc78ff9db44eb8/src/api/performance/controllers/test.js#L10) I perform the same query as above with the `$contains` operator via Document Service API.
 
 Run the following query:
 
